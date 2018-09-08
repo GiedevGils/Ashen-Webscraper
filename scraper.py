@@ -1,17 +1,23 @@
-import requests
-import pypandoc
-import datetime
+import requests, pypandoc, datetime, os
 
+from ConfigParser import SafeConfigParser
 from bs4 import BeautifulSoup
+from os.path import join as pjoin
+
 
 # Startpage
 currentPage = 1
 
+# Define the config file
+parser = SafeConfigParser()
+parser.read('config.ini')
+
 # Amount of pages to loop through
-amountToLoopThrough = 120
+amountToLoopThrough = parser.get('Settings', 'amount-of-pages')
 
 # Open the file to write to file
-file = open("entry1.html", "w", encoding="utf-8")
+dir_path = pjoin("output")
+file = open(pjoin(dir_path, "single_page.html"), "w", encoding="utf-8")
 
 # Define allEntries as an array
 allEntries = []
@@ -58,10 +64,10 @@ for entry in allEntries:
 file.close()
 
 # Open a file to write to after the formatting
-o = open("entries.html","w") 
+o = open(pjoin(dir_path, "entries.html"),"w") 
 
 # Define the file to read from 
-readable = open("entry1.html", "r")
+readable = open(pjoin(dir_path, "single_page.html"), "r")
 
 # For each line in the readable file, replace the <u> and </u> tags with <h1> and </h1> respectively
 for line in readable:
@@ -81,7 +87,7 @@ print("Underlines replaced for " + str(currentPage - 1) + " pages.")
 print("Coverting to .docx file.")
 
 # Transform the formatted file to a .docx file
-output = pypandoc.convert('./entries.html', format='html', to='docx', outputfile='./Field-Book-Tz.-Davidsson.docx')
+output = pypandoc.convert_file(pjoin(dir_path, "entries.html"), format='html', to='docx', outputfile=pjoin(dir_path, 'Fieldbook.docx'))
 
 # Get the time information
 endtime = datetime.datetime.now()
