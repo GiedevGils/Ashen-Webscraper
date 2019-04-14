@@ -1,5 +1,7 @@
 # Ashen Webscraper
 
+_v2.0_
+
 This Python script is made to scan webpages of the Ashen Chapter forums, get the posts from a single thread, and create a Word file out of the posts. 
 
 > IMPORTANT  
