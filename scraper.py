@@ -1,19 +1,18 @@
 import requests, pypandoc, datetime, os
 
-from ConfigParser import SafeConfigParser
+from configparser import ConfigParser
 from bs4 import BeautifulSoup
 from os.path import join as pjoin
-
 
 # Startpage
 currentPage = 1
 
 # Define the config file
-parser = SafeConfigParser()
+parser = ConfigParser()
 parser.read('config.ini')
 
 # Amount of pages to loop through
-amountToLoopThrough = parser.get('Settings', 'amount-of-pages')
+amountToLoopThrough = int( parser.get('Settings', 'amount-of-pages') )
 
 # Open the file to write to file
 dir_path = pjoin("output")
@@ -42,7 +41,7 @@ while True:
         looping += "."
 
     # Get the page
-    page = requests.get("https://theashenchapter.enjin.com/home/m/8190140/viewthread/21525056-field-book-tz-davidss/page/" + str(currentPage), timeout=5)
+    page = requests.get("https://theashenchapter.enjin.com/forum/m/8190140/viewthread/22789972-chapter-notices/page/" + str(currentPage), timeout=5)
     
     # Up the counter by one for the next iteration through the loop
     currentPage+=1
