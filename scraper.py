@@ -1,19 +1,23 @@
 import requests, pypandoc, datetime, os
 
-from ConfigParser import SafeConfigParser
+from configparser import ConfigParser
 from bs4 import BeautifulSoup
 from os.path import join as pjoin
-
 
 # Startpage
 currentPage = 1
 
 # Define the config file
-parser = SafeConfigParser()
+parser = ConfigParser()
 parser.read('config.ini')
 
 # Amount of pages to loop through
-amountToLoopThrough = parser.get('Settings', 'amount-of-pages')
+amountToLoopThrough = int( parser.get('Settings', 'amount-of-pages') )
+url = str( parser.get('Settings', 'url') )
+
+# If the url does not end with a /, add one
+if not url.endswith('/'):
+    url = url + '/'
 
 # Open the file to write to file
 dir_path = pjoin("output")
@@ -26,23 +30,23 @@ allEntries = []
 starttime = datetime.datetime.now()
 
 # Declare a string to use in the while loop
-looping = "Looping - Getting pages"
+looping = " - Getting posts."
 
 while True:
     # Check if the loop should be broken
     if currentPage >= amountToLoopThrough:
         break
     # Print looping to let know there's progress
-    print(str(currentPage) + ": " + looping)
+    print("Page " + str(currentPage) + looping)
 
     # Make it fancy by adding full stops and all
-    if len(looping) >= looping.find("s")+4:
+    if len(looping) >= looping.find(".")+3:
         looping = looping.split('.')[0]
     else:
         looping += "."
 
     # Get the page
-    page = requests.get("https://theashenchapter.enjin.com/home/m/8190140/viewthread/21525056-field-book-tz-davidss/page/" + str(currentPage), timeout=5)
+    page = requests.get(url + str(currentPage), timeout=5)
     
     # Up the counter by one for the next iteration through the loop
     currentPage+=1
@@ -86,8 +90,11 @@ print("Underlines replaced for " + str(currentPage - 1) + " pages.")
 # Print to show progress
 print("Coverting to .docx file.")
 
+# Retrieve filename from settings
+filename = parser.get('Settings', 'output-name')
+
 # Transform the formatted file to a .docx file
-output = pypandoc.convert_file(pjoin(dir_path, "entries.html"), format='html', to='docx', outputfile=pjoin(dir_path, 'Fieldbook.docx'))
+output = pypandoc.convert_file(pjoin(dir_path, "entries.html"), format='html', to='docx', outputfile=pjoin(dir_path, filename + '.docx'))
 
 # Get the time information
 endtime = datetime.datetime.now()
@@ -96,4 +103,4 @@ tdelta = endtime - starttime
 print("Done!")
 print("Started at: " + starttime.strftime("%H:%M:%S"))
 print("Finished at: " + endtime.strftime("%H:%M:%S"))
-print("All the work took: " + str(tdelta))
+print("All the work took: " + str(tdelta) + " seconds.")
