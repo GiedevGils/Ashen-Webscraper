@@ -1,5 +1,7 @@
 # ignore the output folder
 output/
+config.ini
+.vscode
 
 # Created by https://www.gitignore.io/api/python,visualstudiocode
 

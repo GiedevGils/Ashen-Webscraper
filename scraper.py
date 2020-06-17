@@ -21,7 +21,7 @@ if not url.endswith('/'):
 
 # Open the file to write to file
 dir_path = pjoin("output")
-file = open(pjoin(dir_path, "single_page.html"), "w", encoding="utf-8")
+file = open(pjoin(dir_path, "single_page.html"), "w", encoding="UTF-8")
 
 # Define allEntries as an array
 allEntries = []
@@ -34,7 +34,7 @@ looping = " - Getting posts."
 
 while True:
     # Check if the loop should be broken
-    if currentPage >= amountToLoopThrough:
+    if currentPage > amountToLoopThrough:
         break
     # Print looping to let know there's progress
     print("Page " + str(currentPage) + looping)
@@ -68,16 +68,21 @@ for entry in allEntries:
 file.close()
 
 # Open a file to write to after the formatting
-o = open(pjoin(dir_path, "entries.html"),"w") 
+o = open(pjoin(dir_path, "entries.html"),"w", encoding="utf-8") 
 
 # Define the file to read from 
-readable = open(pjoin(dir_path, "single_page.html"), "r")
+readable = open(pjoin(dir_path, "single_page.html"), "r", encoding="utf-8")
+
+# Create the two tags that are defined in the settings as variables to use when adding headers
+header_open = parser.get('Settings', 'header-tag')
+header_close = header_open[:1] + '/' + header_open[1:]
 
 # For each line in the readable file, replace the <u> and </u> tags with <h1> and </h1> respectively
 for line in readable:
     # Actually replace the tags
-    line = line.replace("<u>","<h1>")
-    line = line.replace("</u>","</h1>")
+    line = line.replace(header_open,"<h1>")
+    line = line.replace(header_close,"</h1>")
+
     # Write it to the file
     o.write(line) 
 
